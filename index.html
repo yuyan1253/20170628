@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			*{margin: 0;padding: 0;}
+			html{
+				font-size: 20px;
+			}
+			#box{
+				width: 5rem;
+				height: 5rem;
+				background: #369;
+				margin: 2rem auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box"></div>
+	</body>
+</html>
+<script>
+	
+	(function(doc,win){
+		function change(){
+			doc.documentElement.style.fontSize=20*doc.documentElement.clientWidth/320+'px';
+		}
+		change();
+		win.addEventListener('resize',change,false);
+	})(document,window);
+	//把弧度转角度
+	function a2d(n){
+		return n*180/Math.PI;
+	}
+	document.addEventListener('DOMContentLoaded',function(){
+		var oBox=document.getElementById('box');
+		var d=0;
+		function getD(ev){
+			//求出盒的中心点，盒子离左边的距离+obox宽度的一半(50px)
+			var x1=ev.targetTouches[0].pageX;
+			var y1=ev.targetTouches[0].pageY;
+			//
+			var x2=ev.targetTouches[1].pageX;//手指点下去的x坐标
+			var y2=ev.targetTouches[1].pageY;
+			
+			var x=x2-x1;
+			var y=y1-y2;
+			return a2d(Math.atan2(y,x));//对边比临边，算出的是弧度，所以先把它转成角度
+		}
+		oBox.addEventListener('touchstart',function(ev){
+			var downD=getD(ev);
+			var oldD=d;
+			function move(ev){
+				d=oldD+downD-getD(ev);
+				oBox.style.WebkitTransform='rotate('+d+'deg)';
+			}
+			oBox.addEventListener('touchmove',move,false);
+			ev.preventDefault();//阻止默认事件
+		},false)
+		
+		
+	},false)
+</script>
